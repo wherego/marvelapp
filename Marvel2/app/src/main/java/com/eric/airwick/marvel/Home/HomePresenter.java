@@ -1,5 +1,7 @@
 package com.eric.airwick.marvel.Home;
 
+import android.util.Log;
+
 import com.eric.airwick.marvel.api.MarvelService;
 import com.eric.airwick.marvel.api.Models.Characters;
 
@@ -15,7 +17,6 @@ import rx.schedulers.Schedulers;
 
 public class HomePresenter implements HomeContract.Presenter{
 
-
     private final MarvelService marvelService;
     private final HomeContract.View view;
 
@@ -23,32 +24,31 @@ public class HomePresenter implements HomeContract.Presenter{
         this.marvelService = marvelService;
         this.view = view;
     }
-
     @Override
     public void getCharacters() {
 
         marvelService.getMarvelCharacters().subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(new MarvelCharactersSubscriber());
-
     }
 
-    private class MarvelCharactersSubscriber extends Subscriber<List<Characters>> {
+    private class MarvelCharactersSubscriber extends Subscriber<Characters> {
 
-        List<Characters> characters;
+        Characters characters;
         @Override
         public void onCompleted() {
-
+            view.refreshAdapter(characters);
         }
 
         @Override
         public void onError(Throwable e) {
-
+//handle exceptions
         }
 
         @Override
-        public void onNext(List<Characters> characters) {
-
+        public void onNext(Characters characters) {
+            this.characters = characters;
         }
+
     }
 }

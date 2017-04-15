@@ -3,8 +3,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/home_request_characters"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/character_list"
         android:text="Get Characters"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

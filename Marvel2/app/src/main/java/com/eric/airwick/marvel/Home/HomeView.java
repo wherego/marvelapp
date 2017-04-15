@@ -1,6 +1,8 @@
 package com.eric.airwick.marvel.Home;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -9,6 +11,7 @@ import com.eric.airwick.marvel.Home.dependencies.DaggerHomeComponent;
 import com.eric.airwick.marvel.Home.dependencies.HomeComponent;
 import com.eric.airwick.marvel.Home.dependencies.HomeModule;
 import com.eric.airwick.marvel.R;
+import com.eric.airwick.marvel.api.Models.Characters;
 
 import javax.inject.Inject;
 
@@ -22,8 +25,10 @@ import butterknife.OnClick;
 
 public class HomeView extends FrameLayout implements HomeContract.View {
 
-    @BindView(R.id.home_request_characters)
-    Button getCharactersButton;
+    @BindView(R.id.character_list)
+    RecyclerView characterList;
+
+    CharacterCardAdapter characterAdapter = new CharacterCardAdapter(null);
 
     @Inject
     HomeContract.Presenter presenter;
@@ -47,12 +52,19 @@ public class HomeView extends FrameLayout implements HomeContract.View {
         HomeComponent homeComponent = DaggerHomeComponent.builder().homeModule(new HomeModule(this)).build();
         homeComponent.inject(this);
         ButterKnife.bind(this);
-    }
 
-    @OnClick(R.id.home_request_characters)
-    public void onCharactersButtonClick() {
+        characterList.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        characterList.setLayoutManager(mLayoutManager);
+
         presenter.getCharacters();
     }
 
-
+    @Override
+    public void refreshAdapter(Characters characters) {
+        characterAdapter = null;
+        characterAdapter = new CharacterCardAdapter(characters);
+        characterList.setAdapter(characterAdapter);
+    }
 }
