@@ -22,7 +22,7 @@ public class HomeModule {
     @Provides
     public HomeContract.Presenter provideHomePresenter(MarvelService marvelService) {
 
-        return new HomePresenter();
+        return new HomePresenter(marvelService, view);
     };
 
 }
