@@ -1,6 +1,8 @@
 package com.eric.airwick.marvel.api;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.inject.Singleton;
 
@@ -23,9 +25,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class ApiModule {
 
-    private final String MARVEL_BASE_URL = "http://gateway.marvel.com/";
-    private final String MARVEL_API_KEY = "api_key";
+    private final String MARVEL_BASE_URL = "https://gateway.marvel.com/";
+    private final String MARVEL_API_KEY = "apikey";
     private final String MARVEL_API_VALUE = "ae786ed483cd0499bfcaaee06726a4c2";
+    private final String MARVEL_HASH_KEY = "hash";
+    private final String MARVEL_PRIVATE_KEY_VALUE = "";
+    private final String MARVEL_TS_KEY = "ts";
+    private long MARVEL_TS_VALUE;
 
     @Provides
     @Singleton
@@ -42,9 +48,6 @@ public class ApiModule {
 
     private OkHttpClient getHttpClient() {
 
-        //Sets up HTTP Client
-
-        //adds logging
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -52,13 +55,41 @@ public class ApiModule {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Request request = chain.request();
-                HttpUrl url = request.url().newBuilder().addQueryParameter(
-                        MARVEL_API_KEY, MARVEL_API_VALUE).build();
+                MARVEL_TS_VALUE = System.currentTimeMillis() /1000L;
+                HttpUrl url = request.url().newBuilder()
+                        .addQueryParameter(MARVEL_TS_KEY, String.valueOf(MARVEL_TS_VALUE))
+                        .addQueryParameter(MARVEL_API_KEY, MARVEL_API_VALUE)
+                        .addQueryParameter(MARVEL_HASH_KEY, md5Function())
+                        .build();
                 request = request.newBuilder().url(url).build();
                 return chain.proceed(request);
             }
         }).addInterceptor(httpLoggingInterceptor)
                 .build();
 
+    }
+
+    private String md5Function() {
+
+        String stringToHash =  String.valueOf(MARVEL_TS_VALUE) + MARVEL_PRIVATE_KEY_VALUE + MARVEL_API_VALUE;
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.update(stringToHash.getBytes());
+            byte messageDigestByte[] = messageDigest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigestByte) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        //TODO:add exception
+        return "";
     }
 }

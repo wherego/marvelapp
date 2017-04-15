@@ -14,7 +14,7 @@ import rx.Observable;
 public interface IMarvelService {
 
     //interface for endpoints
-    @GET("/v1/public/characters/")
+    @GET("/v1/public/characters")
     Observable<List<Characters>> getCharacterList();
 
 }
