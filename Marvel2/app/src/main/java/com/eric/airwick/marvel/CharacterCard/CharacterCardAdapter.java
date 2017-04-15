@@ -1,9 +1,11 @@
-package com.eric.airwick.marvel.Home;
+package com.eric.airwick.marvel.CharacterCard;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.eric.airwick.marvel.R;
 import com.eric.airwick.marvel.api.Models.Characters;
 
 /**
@@ -20,12 +22,17 @@ public class CharacterCardAdapter extends RecyclerView.Adapter<CharacterCardAdap
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        CharacterCard v = (CharacterCard) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.cardview_character, parent, false);
+        ViewHolder viewholder = new ViewHolder(v);
+
+        return  viewholder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        holder.bind(characters, position);
     }
 
     @Override
@@ -34,8 +41,19 @@ public class CharacterCardAdapter extends RecyclerView.Adapter<CharacterCardAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
+        CharacterCard card;
+
         public ViewHolder(View itemView) {
             super(itemView);
+            card = (CharacterCard) itemView;
+        }
+
+        public void bind(Characters characters, int position) {
+          //  characters.data.results[position]
+            Characters.Data.Result character = characters.data.results[position];
+            card.setName(character.name);
+            card.setImage(character.thumbnail.path + "." + character.thumbnail.extension);
         }
     }
 }

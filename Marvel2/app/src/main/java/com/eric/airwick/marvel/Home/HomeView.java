@@ -4,9 +4,9 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
+import com.eric.airwick.marvel.CharacterCard.CharacterCardAdapter;
 import com.eric.airwick.marvel.Home.dependencies.DaggerHomeComponent;
 import com.eric.airwick.marvel.Home.dependencies.HomeComponent;
 import com.eric.airwick.marvel.Home.dependencies.HomeModule;
@@ -17,7 +17,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by airwick on 15/04/2017.
