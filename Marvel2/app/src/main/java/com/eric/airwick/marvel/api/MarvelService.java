@@ -19,7 +19,7 @@ private IMarvelService marvelService;
         marvelService = retrofit.create(IMarvelService.class);
     }
 
-    public Observable<List<Characters>> getMarvelCharacters() {
+    public Observable<Characters> getMarvelCharacters() {
        return marvelService.getCharacterList();
     }
 

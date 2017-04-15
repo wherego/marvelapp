@@ -15,6 +15,6 @@ public interface IMarvelService {
 
     //interface for endpoints
     @GET("/v1/public/characters")
-    Observable<List<Characters>> getCharacterList();
+    Observable<Characters> getCharacterList();
 
 }
